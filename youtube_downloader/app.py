@@ -12,7 +12,7 @@ base = st.container(border=True)
 with base:
     x, col1, y = st.columns([3, 20, 3])
     with col1:
-        selected = col1.text_input(label="enter youtube url", placeholder="your youtube url goes here")
+        url = col1.text_input(label="enter youtube url", placeholder="your youtube url goes here")
         col2, col3, col4 = st.columns([3, 2, 3])
         with col2:
             check_button_val = st.button(label="fetch available streams", type="primary")
@@ -22,18 +22,11 @@ with base:
             placeholder = st.empty()
             
             
-def button_logic(youtube_short_urls: list) -> None:
+def button_logic(url: str) -> None:
     if check_button_val:
-        if selected:
-            pass
-            batch_transcripts = get_batch_transcripts(youtube_short_urls)
-
-            # with col4:
-            #     st.download_button(
-            #         label="Download transcripts",
-            #         data=converted_dv,
-            #         file_name="output.csv",
-            #         mime="text/csv",
-            #         disabled=False,
-            #         type="primary",
-            #     )
+        yt, yt_title, yt_thumbnail_url, audio_only_streams, video_only_streams, audio_video_streams = get_yt_streams(url)
+        st.write(url)
+        pass
+    
+with st.spinner(text="streams pull in progress..."):
+    button_logic(url)
