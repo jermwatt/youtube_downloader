@@ -16,6 +16,13 @@ with base:
         col2, col3, col4 = st.columns([3, 2, 3])
         with col2:
             check_button_val = st.button(label="fetch available streams", type="primary")
+            video_options = st.selectbox(
+                            "fps",
+                            (),
+                            index=None,
+                            placeholder="Select video fps",
+                            )
+
         with col3:
             empty_container = st.container()
         with col4:
@@ -25,6 +32,16 @@ with base:
 def button_logic(url: str) -> None:
     if check_button_val:
         yt, yt_title, yt_thumbnail_url, audio_only_streams, video_only_streams, audio_video_streams = get_yt_streams(url)
+
+        # grab all choices from different stream types
+        audio_only_choices = [(v.abr, v.itag) for v in audio_only_streams]
+        video_only_choices = [(v.resolution, v.itag) for v in video_only_streams]
+        audio_video_joint_choices = [(v.resolution, v.itag) for v in audio_video_streams]
+
+        st.write(video_only_choices)
+        st.write(video_only_choices[0][0])
+        
+        # video_options.options = (v[0] for v in video_only_choices)
         st.write(url)
         pass
     

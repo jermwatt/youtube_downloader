@@ -5,11 +5,17 @@ import re
 
 
 def is_valid_youtube_url(url: str) -> bool:
+    print("INFO: A")
     if not isinstance(url, str):
         return False 
-    pattern = r'^https://www\.youtube\.com/watch?v=[A-Za-z0-9_-]{11}$'  # youtube vido ids are always 11 chars long
+    pattern = r'^https://www\.youtube\.com/watch\?v=[A-Za-z0-9_-]{11}$'  # youtube vido ids are always 11 chars long
+    print("INFO: B")
+
     if "shorts" in url:
+        print("INFO: C")
+
         pattern = r'^https://www\.youtube\.com/shorts/[A-Za-z0-9_-]{11}$'  # youtube vido ids are always 11 chars long
+    print(re.match(pattern, url))
     return re.match(pattern, url) is not None
 
 
