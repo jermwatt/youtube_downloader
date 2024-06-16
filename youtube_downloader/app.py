@@ -1,5 +1,6 @@
 import streamlit as st
 from youtube_downloader.streams import get_yt_streams
+from youtube_downloader.download import download_thumbnail
 
 
 st.title("Youtube Downloader")
@@ -83,8 +84,30 @@ def get_set_streams(url: str) -> None:
         st.session_state["audio_only_streams"] = audio_only_streams
         
 
+def download_button_logic(download_button_val: bool):
+    if download_button_val:
+        if st.session_state["a_v_selection_index"] == 0:
+            if st.session_state["a_selection_index"] == 0 and st.session_state["v_selection_index"] == 0:
+                st.warning('please make a selection', icon="⚠️")
+            elif st.session_state["a_selection_index"] == 0 or st.session_state["v_selection_index"] == 0:
+                st.warning('if video only value chosen so must audio only value and vice-versa', icon="⚠️")
+            else:
+                # download audio / video separately and stich together
+                # download thumbnail img
+                pass
+        else:
+            if (st.session_state["a_selection_index"] != 0 or st.session_state["v_selection_index"] != 0):
+                st.warning('cannot chose option for audio/video joint, video only, and audio only', icon="⚠️")
+            else:
+                # download audio/video jointly
+                img_savepath = download_thumbnail(st.session_state["yt_thumbnail_url"], 
+                                                  st.session_state["yt_title"],
+                                                  ".")
+                st.image(img_savepath, caption=st.session_state["yt_title"])
+                pass
+
+
 def render_panel():
-    
     with st.container(border=True):
         col_a, col_b, col_c = st.columns([5, 5, 5])
         a_selection, v_selection, a_v_selection = None, None, None
@@ -98,6 +121,8 @@ def render_panel():
                         )
             if a_v_selection:
                 st.session_state["a_v_selection_index"] = list(st.session_state["audio_video_choices"]).index(a_v_selection)
+            else:
+                st.session_state["a_v_selection_index"] = 0
 
         with col_b:
             v_selection = st.selectbox(
@@ -108,7 +133,9 @@ def render_panel():
                                 )
             if v_selection:
                 st.session_state["v_selection_index"] = list(st.session_state["video_only_choices"]).index(v_selection)
-
+            else:
+                st.session_state["v_selection_index"] = 0
+        
         with col_c:
             a_selection = st.selectbox(
                         "audio only selection (kbps)",
@@ -118,13 +145,15 @@ def render_panel():
                         )
             if a_selection:
                 st.session_state["a_selection_index"] = list(st.session_state["audio_only_choices"]).index(a_selection)
-
+            else:
+                st.session_state["a_selection_index"] = 0
                     
     # download button
     download_button_val = st.button(label="download selected stream", type="primary")             
-   
+    download_button_logic(download_button_val)
             
-def button_logic(url: str) -> None:
+            
+def streams_button_logic(url: str) -> None:
     if check_button_val:
         st.session_state["stream_button_pressed"] = True
         get_set_streams(url)
@@ -135,4 +164,5 @@ if st.session_state["stream_button_pressed"]:
     render_panel()
 
 with st.spinner(text="streams pull in progress..."):
-    button_logic(url)
+    streams_button_logic(url)
+
