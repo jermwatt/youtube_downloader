@@ -167,16 +167,16 @@ def download_button_logic(download_button_val: bool):
             else:
                 with st.spinner(text="download in progress..."):
                     with tempfile.TemporaryDirectory() as tmpdirname:
-                        vid_col, img_col = st.columns([4, 2])
+                        vid_col, img_col = st.columns([10, 1])
                         # download thumbnail
-                        img_savepath = download_thumbnail(
-                            st.session_state["yt_thumbnail_url"],
-                            st.session_state["yt_title"],
-                            tmpdirname,
-                        )
-                        with img_col:
-                            st.subheader("thumbnail")
-                            st.image(img_savepath, caption=st.session_state["yt_title"])
+                        # img_savepath = download_thumbnail(
+                        #     st.session_state["yt_thumbnail_url"],
+                        #     st.session_state["yt_title"],
+                        #     tmpdirname,
+                        # )
+                        # with img_col:
+                        #     st.subheader("thumbnail")
+                        #     st.image(img_savepath, caption=st.session_state["yt_title"])
 
                         # download audio/video jointly
                         audio_index = st.session_state["a_selection_index"]
@@ -214,16 +214,16 @@ def download_button_logic(download_button_val: bool):
             else:
                 with st.spinner(text="download in progress..."):
                     with tempfile.TemporaryDirectory() as tmpdirname:
-                        vid_col, img_col = st.columns([4, 2])
+                        vid_col, img_col = st.columns([10, 1])
                         # download thumbnail
-                        img_savepath = download_thumbnail(
-                            st.session_state["yt_thumbnail_url"],
-                            st.session_state["yt_title"],
-                            tmpdirname,
-                        )
-                        with img_col:
-                            st.subheader("thumbnail")
-                            st.image(img_savepath, caption=st.session_state["yt_title"])
+                        # img_savepath = download_thumbnail(
+                        #     st.session_state["yt_thumbnail_url"],
+                        #     st.session_state["yt_title"],
+                        #     tmpdirname,
+                        # )
+                        # with img_col:
+                        #     st.subheader("thumbnail")
+                        #     st.image(img_savepath, caption=st.session_state["yt_title"])
 
                         # download audio/video jointly
                         index = st.session_state["a_v_selection_index"]
