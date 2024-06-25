@@ -1,8 +1,10 @@
 import streamlit as st
 from youtube_downloader.streams import get_yt_streams
-from youtube_downloader.download import download_thumbnail, download_joint_stream, download_separate_streams_and_join
+from youtube_downloader.download import (
+    download_joint_stream,
+    download_separate_streams_and_join,
+)
 import tempfile
-import uuid
 
 
 st.title("Youtube Downloader")
@@ -42,8 +44,8 @@ if "audio_only_streams" not in st.session_state:
     st.session_state["audio_only_streams"] = None
 if "audio_only_choices" not in st.session_state:
     st.session_state["audio_only_choices"] = None
-    
-    
+
+
 def reset_session_state():
     if "stream_button_pressed" in st.session_state:
         st.session_state["stream_button_pressed"] = False
@@ -82,11 +84,13 @@ def reset_session_state():
 base = st.container(border=True)
 with base:
     x, col1, y = st.columns([3, 20, 3])
+    col_a, col_b, col_c = st.columns([5, 5, 5])
+
     with col1:
         url = col1.text_input(
             label="enter youtube url",
             placeholder="your youtube url goes here",
-            value="https://www.youtube.com/shorts/R1P1FgTrcHo",
+            value="https://www.youtube.com/shorts/SJIq97zboGY",
         )
         if st.session_state["url_stream_count"] == 0:
             st.session_state["url"] = url
@@ -96,7 +100,7 @@ with base:
                 st.session_state["url"] = url
                 if "panel" in st.session_state:
                     del st.session_state["panel"]
-        
+
         col2, col3, col4 = st.columns([3, 2, 3])
         with col2:
             check_button_val = st.button(
@@ -148,7 +152,7 @@ def get_set_streams(url: str) -> None:
         st.session_state["audio_only_streams"] = audio_only_streams
 
 
-def download_button_logic(download_button_val: bool):    
+def download_button_logic(download_button_val: bool):
     if download_button_val:
         if st.session_state["a_v_selection_index"] == 0:
             if (
@@ -168,35 +172,28 @@ def download_button_logic(download_button_val: bool):
                 with st.spinner(text="download in progress..."):
                     with tempfile.TemporaryDirectory() as tmpdirname:
                         vid_col, img_col = st.columns([10, 1])
-                        # download thumbnail
-                        # img_savepath = download_thumbnail(
-                        #     st.session_state["yt_thumbnail_url"],
-                        #     st.session_state["yt_title"],
-                        #     tmpdirname,
-                        # )
-                        # with img_col:
-                        #     st.subheader("thumbnail")
-                        #     st.image(img_savepath, caption=st.session_state["yt_title"])
-
+                        
                         # download audio/video jointly
                         audio_index = st.session_state["a_selection_index"]
                         audio_only_streams = st.session_state["audio_only_streams"]
                         audio_index -= 1
                         audio_selection = audio_only_streams[audio_index]
                         audio_itag = audio_selection.itag
-                        
+
                         video_index = st.session_state["v_selection_index"]
                         video_index -= 1
                         video_only_streams = st.session_state["video_only_streams"]
 
                         video_selection = video_only_streams[video_index]
                         video_itag = video_selection.itag
-                        video_savepath = download_separate_streams_and_join(st.session_state["yt"],
-                                                                            audio_itag, 
-                                                                            video_itag, 
-                                                                            tmpdirname,
-                                                                            st.session_state["yt_title"])
-            
+                        video_savepath = download_separate_streams_and_join(
+                            st.session_state["yt"],
+                            audio_itag,
+                            video_itag,
+                            tmpdirname,
+                            st.session_state["yt_title"],
+                        )
+
                         with vid_col:
                             st.subheader("video")
                             video_file = open(video_savepath, "rb")
@@ -215,15 +212,6 @@ def download_button_logic(download_button_val: bool):
                 with st.spinner(text="download in progress..."):
                     with tempfile.TemporaryDirectory() as tmpdirname:
                         vid_col, img_col = st.columns([10, 1])
-                        # download thumbnail
-                        # img_savepath = download_thumbnail(
-                        #     st.session_state["yt_thumbnail_url"],
-                        #     st.session_state["yt_title"],
-                        #     tmpdirname,
-                        # )
-                        # with img_col:
-                        #     st.subheader("thumbnail")
-                        #     st.image(img_savepath, caption=st.session_state["yt_title"])
 
                         # download audio/video jointly
                         index = st.session_state["a_v_selection_index"]
@@ -243,13 +231,11 @@ def download_button_logic(download_button_val: bool):
                             video_bytes = video_file.read()
                             st.video(video_bytes)
 
-
 def render_panel():
     my_panel = st.empty()
     with my_panel.container(border=True):
-        col_a, col_b, col_c = st.columns([5, 5, 5])
         a_selection, v_selection, a_v_selection = None, None, None
-
+                
         with col_a:
             a_v_selection = st.selectbox(
                 "audio/video joint selection (fps)",
@@ -293,7 +279,9 @@ def render_panel():
                 st.session_state["a_selection_index"] = 0
 
         # download button
-        download_button_val = st.button(label="download selected stream", type="primary")
+        download_button_val = st.button(
+            label="download selected stream", type="primary"
+        )
         download_button_logic(download_button_val)
     st.session_state["panel"] = my_panel
 
@@ -309,6 +297,7 @@ def streams_button_logic(url: str) -> None:
 
 
 if st.session_state["stream_button_pressed"]:
+    st.empty()
     render_panel()
 
 with st.spinner(text="streams pull in progress..."):
@@ -316,5 +305,3 @@ with st.spinner(text="streams pull in progress..."):
         streams_button_logic(st.session_state["url"])
     except:
         pass
-
-            

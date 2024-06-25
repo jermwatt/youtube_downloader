@@ -1,6 +1,0 @@
-name: youtube_downloader
-services:
-    youtube_downloader:
-        ports:
-            - 8501:8501
-        image: youtube_downloader
