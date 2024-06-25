@@ -22,10 +22,6 @@ def get_yt_streams(
             # load in video
             yt = YouTube(url, proxies=my_proxies)
 
-            # get title and thumbnail
-            yt_title = yt.title
-            yt_thumbnail_url = yt.thumbnail_url
-
             # audio only streams
             audio_only_streams = (
                 yt.streams.filter(file_extension="mp4", only_audio=True, type="audio")
@@ -52,6 +48,10 @@ def get_yt_streams(
                 .order_by("resolution")
                 .asc()
             )
+            
+            # get title and thumbnail
+            yt_title = yt.title
+            yt_thumbnail_url = yt.thumbnail_url
 
             return (
                 yt,
