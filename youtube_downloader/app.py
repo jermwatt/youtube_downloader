@@ -280,7 +280,7 @@ def render_panel():
 
         # download button
         download_button_val = st.button(
-            label="download selected stream", type="primary"
+            label="download selected streams", type="primary"
         )
         download_button_logic(download_button_val)
     st.session_state["panel"] = my_panel
