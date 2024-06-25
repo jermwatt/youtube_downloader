@@ -6,7 +6,7 @@ from youtube_downloader.download import (
 )
 import tempfile
 
-st.set_page_config(page_title="YT Downloader", layout="wide")
+st.set_page_config(page_title="YT Downloader")
 st.title("Youtube Downloader")
 st.markdown("instructions: paste a valid youtube url in the textbox and download ")
 
