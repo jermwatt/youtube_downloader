@@ -6,7 +6,7 @@ from youtube_downloader.download import (
 )
 import tempfile
 
-
+st.set_page_config(page_title="YT Downloader", layout="wide")
 st.title("Youtube Downloader")
 st.markdown("instructions: paste a valid youtube url in the textbox and download ")
 
@@ -195,7 +195,7 @@ def download_button_logic(download_button_val: bool):
                         )
 
                         with vid_col:
-                            st.subheader("video")
+                            st.subheader(st.session_state["yt_title"])
                             video_file = open(video_savepath, "rb")
                             video_bytes = video_file.read()
                             st.video(video_bytes)
@@ -226,7 +226,7 @@ def download_button_logic(download_button_val: bool):
                             st.session_state["yt_title"],
                         )
                         with vid_col:
-                            st.subheader("video")
+                            st.subheader(st.session_state["yt_title"])
                             video_file = open(video_savepath, "rb")
                             video_bytes = video_file.read()
                             st.video(video_bytes)
