@@ -90,7 +90,7 @@ with base:
         url = col1.text_input(
             label="enter youtube url",
             placeholder="your youtube url goes here",
-            value="https://www.youtube.com/shorts/SJIq97zboGY",
+            value="https://www.youtube.com/watch?v=H1r4IMS0vf8",
         )
         if st.session_state["url_stream_count"] == 0:
             st.session_state["url"] = url
