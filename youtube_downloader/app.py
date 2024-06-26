@@ -238,7 +238,7 @@ def render_panel():
                 
         with col_a:
             a_v_selection = st.selectbox(
-                "audio/video joint selection (fps)",
+                "joint selection (fps)",
                 options=st.session_state["audio_video_choices"],
                 index=st.session_state["a_v_selection_index"],
                 placeholder="Select video fps",
