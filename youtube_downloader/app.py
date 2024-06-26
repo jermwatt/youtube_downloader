@@ -99,6 +99,7 @@ with base:
                 st.session_state["url_stream_count"] = 0
                 st.session_state["url"] = url
                 if "panel" in st.session_state:
+                    print("Deleting panel for refresh")
                     del st.session_state["panel"]
 
         col2, col3, col4 = st.columns([3, 2, 3])

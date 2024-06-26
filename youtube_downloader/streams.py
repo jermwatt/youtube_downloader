@@ -50,7 +50,7 @@ def get_yt_streams(
             )
             
             # get title and thumbnail
-            yt_title = yt.title
+            yt_title = yt.title.replace("/", " ")
             yt_thumbnail_url = yt.thumbnail_url
 
             return (
