@@ -1,6 +1,7 @@
 from pytube import YouTube
 from moviepy.editor import VideoFileClip, AudioFileClip
 import requests
+import tempfile
 
 
 def download_joint_stream(yt: YouTube, itag: int, save_dir: str, yt_title: str) -> str:
@@ -15,21 +16,22 @@ def download_joint_stream(yt: YouTube, itag: int, save_dir: str, yt_title: str) 
 def download_separate_streams_and_join(
     yt: YouTube, audio_itag: int, video_itag: int, save_dir: str, yt_title: str
 ) -> str:
-    tmpaudiopath = save_dir + "/" + yt_title + "_audio.mp4"
-    tmpvideopath = save_dir + "/" + yt_title + "_video.mp4"
-    yt.streams.get_by_itag(audio_itag).download(filename=tmpaudiopath)
-    yt.streams.get_by_itag(video_itag).download(filename=tmpvideopath)
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        tmpaudiopath = tmpdirname + "/" + yt_title + "_audio.mp4"
+        tmpvideopath = tmpdirname + "/" + yt_title + "_video.mp4"
+        yt.streams.get_by_itag(audio_itag).download(filename=tmpaudiopath)
+        yt.streams.get_by_itag(video_itag).download(filename=tmpvideopath)
 
-    # combine the video clip with the audio clip
-    video_clip = VideoFileClip(tmpvideopath)
-    audio_clip = AudioFileClip(tmpaudiopath)
-    video_clip.audio = audio_clip
-    final_save_path = save_dir + "/" + yt_title + ".mp4"
-    video_clip.write_videofile(
-        final_save_path,
-        codec="libx264",
-        audio_codec="aac",
-        temp_audiofile="temp-audio.m4a",
-        remove_temp=True,
-    )
+        # combine the video clip with the audio clip
+        video_clip = VideoFileClip(tmpvideopath)
+        audio_clip = AudioFileClip(tmpaudiopath)
+        video_clip.audio = audio_clip
+        final_save_path = save_dir + "/" + yt_title + ".mp4"
+        video_clip.write_videofile(
+            final_save_path,
+            codec="libx264",
+            audio_codec="aac",
+            temp_audiofile="temp-audio.m4a",
+            remove_temp=True,
+        )
     return final_save_path
