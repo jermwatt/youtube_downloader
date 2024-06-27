@@ -4,7 +4,8 @@ from youtube_downloader.download import (
     download_joint_stream,
     download_separate_streams_and_join,
 )
-import tempfile
+import os
+
 
 st.set_page_config(page_title="YT Downloader")
 st.title("Youtube Downloader")
@@ -171,35 +172,36 @@ def download_button_logic(download_button_val: bool):
                 )
             else:
                 with st.spinner(text="download in progress..."):
-                    with tempfile.TemporaryDirectory() as tmpdirname:
-                        vid_col, img_col = st.columns([10, 1])
-                        
-                        # download audio/video jointly
-                        audio_index = st.session_state["a_selection_index"]
-                        audio_only_streams = st.session_state["audio_only_streams"]
-                        audio_index -= 1
-                        audio_selection = audio_only_streams[audio_index]
-                        audio_itag = audio_selection.itag
+                    savedir = os.path.expanduser("~/Downloads")
+                    vid_col, img_col = st.columns([10, 1])
+                    
+                    # download audio/video jointly
+                    audio_index = st.session_state["a_selection_index"]
+                    audio_only_streams = st.session_state["audio_only_streams"]
+                    audio_index -= 1
+                    audio_selection = audio_only_streams[audio_index]
+                    audio_itag = audio_selection.itag
 
-                        video_index = st.session_state["v_selection_index"]
-                        video_index -= 1
-                        video_only_streams = st.session_state["video_only_streams"]
+                    video_index = st.session_state["v_selection_index"]
+                    video_index -= 1
+                    video_only_streams = st.session_state["video_only_streams"]
 
-                        video_selection = video_only_streams[video_index]
-                        video_itag = video_selection.itag
-                        video_savepath = download_separate_streams_and_join(
-                            st.session_state["yt"],
-                            audio_itag,
-                            video_itag,
-                            tmpdirname,
-                            st.session_state["yt_title"],
-                        )
+                    video_selection = video_only_streams[video_index]
+                    video_itag = video_selection.itag
+                    video_savepath = download_separate_streams_and_join(
+                        st.session_state["yt"],
+                        audio_itag,
+                        video_itag,
+                        savedir,
+                        st.session_state["yt_title"],
+                    )
 
-                        with vid_col:
-                            st.subheader(st.session_state["yt_title"])
-                            video_file = open(video_savepath, "rb")
-                            video_bytes = video_file.read()
-                            st.video(video_bytes)
+                    with vid_col:
+                        st.subheader(st.session_state["yt_title"])
+                        video_file = open(video_savepath, "rb")
+                        video_bytes = video_file.read()
+                        st.video(video_bytes)                            
+                            
         else:
             if (
                 st.session_state["a_selection_index"] != 0
@@ -211,26 +213,26 @@ def download_button_logic(download_button_val: bool):
                 )
             else:
                 with st.spinner(text="download in progress..."):
-                    with tempfile.TemporaryDirectory() as tmpdirname:
-                        vid_col, img_col = st.columns([10, 1])
+                    savedir = os.path.expanduser("~/Downloads")
+                    vid_col, img_col = st.columns([10, 1])
 
-                        # download audio/video jointly
-                        index = st.session_state["a_v_selection_index"]
-                        index -= 1
-                        audio_video_streams = st.session_state["audio_video_streams"]
-                        selection = audio_video_streams[index]
-                        itag = selection.itag
-                        video_savepath = download_joint_stream(
-                            st.session_state["yt"],
-                            itag,
-                            tmpdirname,
-                            st.session_state["yt_title"],
-                        )
-                        with vid_col:
-                            st.subheader(st.session_state["yt_title"])
-                            video_file = open(video_savepath, "rb")
-                            video_bytes = video_file.read()
-                            st.video(video_bytes)
+                    # download audio/video jointly
+                    index = st.session_state["a_v_selection_index"]
+                    index -= 1
+                    audio_video_streams = st.session_state["audio_video_streams"]
+                    selection = audio_video_streams[index]
+                    itag = selection.itag
+                    video_savepath = download_joint_stream(
+                        st.session_state["yt"],
+                        itag,
+                        savedir,
+                        st.session_state["yt_title"],
+                    )
+                    with vid_col:
+                        st.subheader(st.session_state["yt_title"])
+                        video_file = open(video_savepath, "rb")
+                        video_bytes = video_file.read()
+                        st.video(video_bytes)
 
 def render_panel():
     my_panel = st.empty()

@@ -5,7 +5,7 @@ import requests
 
 def download_joint_stream(yt: YouTube, itag: int, save_dir: str, yt_title: str) -> str:
     try:
-        final_save_path = save_dir + yt_title + ".mp4"
+        final_save_path = save_dir + "/" + yt_title + ".mp4"   
         yt.streams.get_by_itag(itag).download(filename=final_save_path)
         return final_save_path
     except Exception as e:
